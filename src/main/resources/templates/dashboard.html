@@ -10,7 +10,10 @@
     <div class="container">
         <header>
             <h1 th:text="'Welcome, ' + ${user.name} + '!'">Welcome, User!</h1>
-            <p th:text="'Your current balance is: UGX ' + ${balance}">Your current balance is: UGX 0.0</p>
+            <div class="balance-card">
+                <h2>Current Balance</h2>
+                <p th:text="'UGX ' + ${balance}">UGX 0.0</p>
+            </div>
         </header>
         <section>
             <h2>Actions</h2>
