@@ -43,5 +43,17 @@
     </table>
 
     <a href="/">Logout</a>
+
+    <!-- Popup notifications for success and error messages -->
+    <script th:if="${success != null}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert('[[${success}]]');
+        /*]]>*/
+    </script>
+    <script th:if="${error != null}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert('[[${error}]]');
+        /*]]>*/
+    </script>
 </body>
 </html>
