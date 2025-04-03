@@ -24,9 +24,10 @@
         <header>
             <h1>Signup for a New Account</h1>
         </header>
-        <form action="/api/signup" method="POST" id="signupForm">
-            <label for="userId">User ID:</label>
+        <form action="/api/signup" method="POST" id="signupForm" onsubmit="return validateSignup()">
+            <label for="userId">Create unique userID for login:</label>
             <input type="text" id="userId" name="userId" required>
+            <div id="userIdError" class="error-message"></div>
             
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -52,6 +53,27 @@
     </div>
     
     <script>
+        // Validate user ID
+        function validateUserId() {
+            const userIdField = document.getElementById("userId");
+            const userIdError = document.getElementById("userIdError");
+            const userId = userIdField.value;
+
+            if (!/^\d+$/.test(userId)) {
+                userIdError.textContent = "User ID must contain only numbers.";
+                return false;
+            }
+
+            const userIdNumber = parseInt(userId, 10);
+            if (userIdNumber < 1 || userIdNumber > 10000) {
+                userIdError.textContent = "User ID must be between 1 and 10,000.";
+                return false;
+            }
+
+            userIdError.textContent = ""; // Clear error message
+            return true;
+        }
+
         // Validate password strength
         function validateStrength(password) {
             const hasUpperCase = /[A-Z]/.test(password);
@@ -87,18 +109,30 @@
             }
         }
 
-        // Prevent form submission if passwords don't match or are weak
-        document.getElementById("signupForm").addEventListener("submit", function(e) {
+        // Validate the entire signup form
+        function validateSignup() {
+            const isUserIdValid = validateUserId();
             const strength = validateStrength(passwordField.value);
-            if (passwordField.value !== confirmPasswordField.value) {
-                e.preventDefault();
-                matchErrorDiv.textContent = "Passwords do not match.";
-            } else if (strength === "Weak") {
-                e.preventDefault();
+            const isPasswordStrong = strength === "Strong";
+            const doPasswordsMatch = passwordField.value === confirmPasswordField.value;
+
+            if (!isUserIdValid) {
+                return false;
+            }
+
+            if (!isPasswordStrong) {
                 strengthIndicatorDiv.textContent = "Password is too weak. Use at least 6 characters, including uppercase letters and numbers.";
                 strengthIndicatorDiv.style.color = "red";
+                return false;
             }
-        });
+
+            if (!doPasswordsMatch) {
+                matchErrorDiv.textContent = "Passwords do not match.";
+                return false;
+            }
+
+            return true;
+        }
     </script>
 </body>
 </html>
