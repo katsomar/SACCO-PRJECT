@@ -3,20 +3,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:c:\\Users\\user\\Desktop\\SACCO PRJECT\\data\\sacco.db";
+    // Update connection parameters for MS SQL Server:
+    private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=SaccoDB";
+    private static final String DB_USER = "sa"; // Replace with your SQL Server username
+    private static final String DB_PASSWORD = "omar1234"; // Replace with your SQL Server password
 
     public DatabaseManager() {
         try {
-            // Load the SQLite JDBC driver
-            Class.forName("org.sqlite.JDBC");
-            System.out.println("SQLite JDBC driver loaded successfully.");
+            // Load the SQL Server JDBC driver
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            System.out.println("SQL Server JDBC driver loaded successfully.");
         } catch (ClassNotFoundException e) {
-            System.err.println("SQLite JDBC driver not found. Make sure it's in the classpath.");
+            System.err.println("SQL Server JDBC driver not found. Make sure it's in the classpath.");
             e.printStackTrace();
         }
 
         // Debug: Check if the database connection is successful
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             if (conn != null) {
                 System.out.println("Database connection established at: " + DB_URL);
             }
@@ -29,27 +32,35 @@ public class DatabaseManager {
     }
 
     private void createTables() {
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement()) {
-            // Create Users table
-            String createUsersTable = "CREATE TABLE IF NOT EXISTS Users (" +
-                    "userId TEXT PRIMARY KEY," +
-                    "name TEXT NOT NULL," +
-                    "email TEXT NOT NULL," +
-                    "password TEXT NOT NULL," +
-                    "balance REAL DEFAULT 0.0" +
-                    ")";
+            // Create Users table using T-SQL syntax
+            String createUsersTable =
+                "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U') " +
+                "BEGIN " +
+                "CREATE TABLE Users (" +
+                "userId NVARCHAR(50) PRIMARY KEY, " +
+                "name NVARCHAR(100) NOT NULL, " +
+                "email NVARCHAR(100) NOT NULL, " +
+                "password NVARCHAR(100) NOT NULL, " +
+                "balance FLOAT DEFAULT 0.0" +
+                "); " +
+                "END";
             stmt.execute(createUsersTable);
 
-            // Create Transactions table
-            String createTransactionsTable = "CREATE TABLE IF NOT EXISTS Transactions (" +
-                    "transactionId INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "userId TEXT NOT NULL," +
-                    "type TEXT NOT NULL," +
-                    "amount REAL NOT NULL," +
-                    "timestamp TEXT NOT NULL," +
-                    "FOREIGN KEY(userId) REFERENCES Users(userId)" +
-                    ")";
+            // Create Transactions table using T-SQL syntax
+            String createTransactionsTable =
+                "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Transactions' AND xtype='U') " +
+                "BEGIN " +
+                "CREATE TABLE Transactions (" +
+                "transactionId INT IDENTITY(1,1) PRIMARY KEY, " +
+                "userId NVARCHAR(50) NOT NULL, " +
+                "type NVARCHAR(50) NOT NULL, " +
+                "amount FLOAT NOT NULL, " +
+                "timestamp DATETIME NOT NULL, " +
+                "FOREIGN KEY(userId) REFERENCES Users(userId)" +
+                "); " +
+                "END";
             stmt.execute(createTransactionsTable);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,7 +69,7 @@ public class DatabaseManager {
 
     public boolean insertUser(String userId, String name, String email, String password) {
         String sql = "INSERT INTO Users(userId, name, email, password) VALUES(?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userId);
             pstmt.setString(2, name);
@@ -75,7 +86,7 @@ public class DatabaseManager {
         String sql = password == null
                 ? "SELECT * FROM Users WHERE userId = ?"
                 : "SELECT * FROM Users WHERE userId = ? AND password = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userId);
             if (password != null) {
@@ -99,7 +110,7 @@ public class DatabaseManager {
 
     public void updateBalance(String userId, double balance) {
         String sql = "UPDATE Users SET balance = ? WHERE userId = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, balance);
             pstmt.setString(2, userId);
@@ -111,7 +122,7 @@ public class DatabaseManager {
 
     public void insertTransaction(String userId, String type, double amount) {
         String sql = "INSERT INTO Transactions(userId, type, amount, timestamp) VALUES(?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userId);
             pstmt.setString(2, type);
@@ -126,7 +137,7 @@ public class DatabaseManager {
     public List<Transaction> getLastNTransactions(String userId, int n) {
         String sql = "SELECT * FROM Transactions WHERE userId = ? ORDER BY timestamp DESC LIMIT ?";
         List<Transaction> transactions = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(DB_URL);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userId);
             pstmt.setInt(2, n);

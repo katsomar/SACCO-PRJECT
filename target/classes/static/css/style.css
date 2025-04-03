@@ -1,6 +1,6 @@
 body {
-    background: #f0f2f5;
-    font-family: Arial, sans-serif;
+    background: #e8f0fe;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     color: #333;
@@ -11,9 +11,9 @@ body {
     max-width: 600px;
     margin: 40px auto;
     background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 header {
@@ -23,6 +23,8 @@ header {
 
 header h1 {
     color: #007bcc;
+    font-size: 24px;
+    margin-bottom: 20px;
 }
 
 form label {
@@ -39,15 +41,21 @@ form input, form button {
     border-radius: 4px;
 }
 
+/* Updated Button Styling */
 form button {
-    background: #007bcc;
-    color: #fff;
+    background: linear-gradient(45deg, #007bcc, #005fa3);
     border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 form button:hover {
-    background: #005fa3;
+    background: linear-gradient(45deg, #005fa3, #003f75);
+    transform: scale(1.05);
 }
 
 table {
@@ -65,17 +73,20 @@ th, td {
     text-align: left;
 }
 
+/* Add subtle hover effects for links */
 a {
     color: #007bcc;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 a:hover {
+    color: #005fa3;
     text-decoration: underline;
 }
 
 .balance-card {
-    background-color: #007bcc;
+    background: linear-gradient(45deg, #007bcc, #005fa3);
     color: #fff;
     padding: 20px;
     margin: 20px 0;
@@ -90,5 +101,5 @@ a:hover {
 .balance-card p {
     font-size: 28px;
     font-weight: bold;
-    margin: 10px 0 0;
+    margin-top: 10px;
 }
