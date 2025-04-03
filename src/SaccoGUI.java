@@ -241,11 +241,18 @@ public class SaccoGUI {
         JTable table = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
         JButton backButton = new JButton("Back");
+        JButton printButton = new JButton("Print Transactions");
+
+        buttonPanel.add(backButton);
+        buttonPanel.add(printButton);
 
         panel.add(header, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(backButton, BorderLayout.SOUTH);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.add(panel);
         frame.setVisible(true);
@@ -253,6 +260,16 @@ public class SaccoGUI {
         backButton.addActionListener(e -> {
             frame.dispose();
             showDashboard(user);
+        });
+
+        printButton.addActionListener(e -> {
+            try {
+                table.print(JTable.PrintMode.FIT_WIDTH,
+                        new MessageFormat("Transaction History for " + user.getName()),
+                        new MessageFormat("Page {0}"));
+            } catch (java.awt.print.PrinterException ex) {
+                JOptionPane.showMessageDialog(frame, "Printing failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="/js/pixie.js"></script>
     <style>
         .password-container {
             position: relative;
@@ -24,6 +26,28 @@
             text-align: center;
             margin-bottom: 10px;
         }
+        .pixie {
+            position: absolute;
+            background: #ADD8E6; /* Light Blue */
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(10px) translateX(10px) scale(1.2);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.6;
+            }
+        }
     </style>
 </head>
 <body>
@@ -41,18 +65,16 @@
                 <input type="password" id="password" name="password" required>
                 <span class="toggle-password" onclick="togglePassword('password')">&#128065;</span>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
         </form>
     </div>
     <script>
         // Toggle password visibility for a given field ID
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
-            if (field.type === "password") {
-                field.type = "text";
-            } else {
-                field.type = "password";
-            }
+            field.type = field.type === "password" ? "text" : "password";
         }
     </script>
 </body>

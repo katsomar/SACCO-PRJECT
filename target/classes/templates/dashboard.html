@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .transaction-history, .transaction-history * {
+                visibility: visible;
+            }
+            .transaction-history {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+            .print-button {
+                display: none; /* Hide the print button during printing */
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -17,14 +35,14 @@
         </header>
         <section>
             <h2>Actions</h2>
-            <form id="depositForm" action="/api/deposit" method="POST" onsubmit="return validateDeposit()">
+            <form id="depositForm" th:action="@{/api/deposit}" method="POST" onsubmit="return validateDeposit()">
                 <label for="depositAmount">Deposit Amount:</label>
                 <input type="number" id="depositAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
                 <div id="depositError" class="error-message" style="color: red; font-size: 12px;"></div>
                 <button type="submit">Deposit</button>
             </form>
-            <form id="withdrawForm" action="/api/withdraw" method="POST" onsubmit="return validateWithdrawal()">
+            <form id="withdrawForm" th:action="@{/api/withdraw}" method="POST" onsubmit="return validateWithdrawal()">
                 <label for="withdrawAmount">Withdraw Amount:</label>
                 <input type="number" id="withdrawAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
@@ -32,7 +50,7 @@
                 <button type="submit">Withdraw</button>
             </form>
         </section>
-        <section>
+        <section class="transaction-history">
             <h2>Transaction History</h2>
             <table>
                 <thead>
@@ -50,6 +68,7 @@
                     </tr>
                 </tbody>
             </table>
+            <button onclick="window.print()" class="print-button">Print Transactions</button>
         </section>
         <a href="/index.html">Logout</a>
         
