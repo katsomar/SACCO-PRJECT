@@ -17,6 +17,15 @@
             color: red;
             font-size: 12px;
         }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 14px;
+            color: #007bcc;
+        }
     </style>
 </head>
 <body>
@@ -38,12 +47,14 @@
             <label for="password">Password:</label>
             <div class="password-container">
                 <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onclick="togglePassword('password')">&#128065;</span>
                 <div id="strengthIndicator" class="strength-message"></div>
             </div>
             
             <label for="confirmPassword">Confirm Password:</label>
             <div class="password-container">
                 <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <span class="toggle-password" onclick="togglePassword('confirmPassword')">&#128065;</span>
                 <div id="matchError" class="error-message"></div>
             </div>
             
@@ -132,6 +143,16 @@
             }
 
             return true;
+        }
+
+        // Toggle password visibility for a given field ID
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+            } else {
+                field.type = "password";
+            }
         }
     </script>
 </body>

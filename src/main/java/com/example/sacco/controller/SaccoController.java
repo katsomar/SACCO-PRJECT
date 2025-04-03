@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api")
@@ -41,16 +42,23 @@ public class SaccoController {
 
     @PostMapping("/login")
     public String login(@RequestParam String userId, @RequestParam String password, Model model) {
-        User user = userRepository.findByUserIdAndPassword(userId, password);
-        if (user != null) {
-            model.addAttribute("user", user);
-            model.addAttribute("balance", user.getBalance());
-            List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
-            model.addAttribute("transactions", transactions);
-            return "dashboard"; // Render dashboard.html
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            if(user.getPassword().equals(password)){
+                model.addAttribute("user", user);
+                model.addAttribute("balance", user.getBalance());
+                List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
+                model.addAttribute("transactions", transactions);
+                return "dashboard"; // Render dashboard.html
+            }else{
+                model.addAttribute("error", "Wrong password!");
+                return "redirect:/index.html"; // Redirect to login page with error message
+            }
+        } else {
+            model.addAttribute("error", "User not found!");
+            return "redirect:/index.html";
         }
-        model.addAttribute("error", "Invalid credentials. Please try again.");
-        return "redirect:/index.html"; // Redirect to static login page
     }
 
     @PostMapping("/deposit")

@@ -5,19 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <style>
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 14px;
+            color: #007bcc;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Login</h1>
         </header>
+        <!-- Display error message if exists -->
+        <div th:if="${error != null}" class="error-message" th:text="${error}"></div>
         <form th:action="@{/login}" method="post">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onclick="togglePassword('password')">&#128065;</span>
+            </div>
             <button type="submit">Login</button>
         </form>
     </div>
+    <script>
+        // Toggle password visibility for a given field ID
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+            } else {
+                field.type = "password";
+            }
+        }
+    </script>
 </body>
 </html>
