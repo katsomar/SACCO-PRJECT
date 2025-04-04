@@ -33,13 +33,11 @@
             </form>
         </section>
         <section>
-            <a th:href="@{/api/transactions(userId=${user.userId})}" 
-               style="display: inline-block; border: 1px solid black; color: aliceblue; text-decoration: none; background: #0186ae; padding: 5px 10px; border-radius: 5px; text-align: center;">
+            <a th:href="@{/api/transactions(userId=${user.userId})}" class="small-link">
                 View Transaction History
             </a>
         </section>
-        <a href="/index.html" onclick="return confirmLogout()" 
-           style="display: inline-block; border: 1px solid black; color: aliceblue; text-decoration: none; background: #0186ae; padding: 5px 10px; border-radius: 5px; text-align: center;">
+        <a href="/index.html" onclick="return confirmLogout()" class="small-link">
             Logout
         </a>
     </div>
