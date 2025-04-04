@@ -8,8 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
@@ -48,11 +52,6 @@ public class SaccoController {
             if (user.getPassword().equals(password)) {
                 model.addAttribute("user", user);
                 model.addAttribute("balance", user.getBalance());
-
-                List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(user.getUserId());
-
-                model.addAttribute("transactions", transactions);
-
                 return "dashboard"; // Render dashboard.html
             } else {
                 model.addAttribute("error", "Wrong password!");
@@ -81,10 +80,6 @@ public class SaccoController {
         model.addAttribute("user", user);
         model.addAttribute("balance", user.getBalance());
 
-        List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
-
-        model.addAttribute("transactions", transactions);
-
         return "dashboard"; // Redirect back to the dashboard with updated data
     }
 
@@ -97,10 +92,6 @@ public class SaccoController {
             if (user != null) {
                 model.addAttribute("user", user);
                 model.addAttribute("balance", user.getBalance());
-
-                List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
-
-                model.addAttribute("transactions", transactions);
             }
             return "dashboard"; // Return the dashboard view with the error message
         }
@@ -115,17 +106,51 @@ public class SaccoController {
         model.addAttribute("user", user);
         model.addAttribute("balance", user.getBalance());
 
-        List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
-
-        model.addAttribute("transactions", transactions);
-
         return "dashboard"; // Return updated dashboard view
     }
 
     @GetMapping("/transactions")
-    public String getTransactions(@RequestParam String userId, Model model) {
+    public String getTransactions(@RequestParam String userId,
+                                  @RequestParam(required = false) String searchType,
+                                  @RequestParam(required = false) String searchDate,
+                                  Model model) {
         List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
+
+        // Create a HashMap to store transactions by date
+        Map<LocalDate, List<Transaction>> transactionMap = transactions.stream()
+                .collect(Collectors.groupingBy(transaction -> transaction.getTimestamp().toLocalDate()));
+
+        // Filter transactions by type if searchType is provided
+        if (searchType != null && !searchType.isEmpty()) {
+            transactions = transactions.stream()
+                    .filter(transaction -> transaction.getType().equalsIgnoreCase(searchType))
+                    .collect(Collectors.toList());
+        }
+
+        // Filter transactions by date if searchDate is provided
+        if (searchDate != null && !searchDate.isEmpty()) {
+            LocalDate date = LocalDate.parse(searchDate);
+            transactions = transactionMap.getOrDefault(date, List.of());
+        }
+
         model.addAttribute("transactions", transactions);
+        model.addAttribute("userId", userId);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchDate", searchDate);
         return "transactions"; // Serve the transactions page
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model, @RequestParam String userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            model.addAttribute("user", user);
+            model.addAttribute("balance", user.getBalance());
+            return "dashboard"; // Render the dashboard page
+        } else {
+            model.addAttribute("error", "User not found!");
+            return "redirect:/index.html";
+        }
     }
 }

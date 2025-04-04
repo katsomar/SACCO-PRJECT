@@ -79,7 +79,7 @@ public class User {
 
     public void deposit(double amount) {
         balance += amount;
-        Transaction transaction = new Transaction(this, "Deposit", amount); // Pass the User object
+        Transaction transaction = new Transaction(this, "Deposit", amount);
         transactions.add(transaction);
     }
 

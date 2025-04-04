@@ -18,16 +18,13 @@ public class SaccoSystem {
     }
 
     public boolean deposit(String userId, double amount) {
-        System.out.println("Attempting to deposit " + amount + " for user: " + userId);
         User user = dbManager.getUser(userId, null);
         if (user != null) {
             double newBalance = user.getBalance() + amount;
             dbManager.updateBalance(userId, newBalance);
             dbManager.insertTransaction(userId, "Deposit", amount);
-            System.out.println("Deposit successful. New balance: " + newBalance);
             return true;
         }
-        System.out.println("Deposit failed. User not found.");
         return false;
     }
 

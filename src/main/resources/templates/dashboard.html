@@ -5,24 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <style>
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .transaction-history, .transaction-history * {
-                visibility: visible;
-            }
-            .transaction-history {
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
-            .print-button {
-                display: none; /* Hide the print button during printing */
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -35,14 +17,14 @@
         </header>
         <section>
             <h2>Actions</h2>
-            <form id="depositForm" th:action="@{/api/deposit}" method="POST" onsubmit="return validateDeposit()">
+            <form id="depositForm" th:action="@{/api/deposit}" method="POST" onsubmit="return confirmDeposit()">
                 <label for="depositAmount">Deposit Amount:</label>
                 <input type="number" id="depositAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
                 <div id="depositError" class="error-message" style="color: red; font-size: 12px;"></div>
                 <button type="submit">Deposit</button>
             </form>
-            <form id="withdrawForm" th:action="@{/api/withdraw}" method="POST" onsubmit="return validateWithdrawal()">
+            <form id="withdrawForm" th:action="@{/api/withdraw}" method="POST" onsubmit="return confirmWithdrawal()">
                 <label for="withdrawAmount">Withdraw Amount:</label>
                 <input type="number" id="withdrawAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
@@ -50,63 +32,45 @@
                 <button type="submit">Withdraw</button>
             </form>
         </section>
-        <section class="transaction-history">
-            <h2>Transaction History</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="transaction : ${transactions}">
-                        <td th:text="${transaction.timestamp}">Timestamp</td>
-                        <td th:text="${transaction.type}">Type</td>
-                        <td th:text="'UGX ' + ${transaction.amount}">UGX 0.00</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button onclick="window.print()" class="print-button">Print Transactions</button>
+        <section>
+            <a th:href="@{/api/transactions(userId=${user.userId})}" 
+               style="display: inline-block; border: 1px solid black; color: aliceblue; text-decoration: none; background: #0186ae; padding: 5px 10px; border-radius: 5px; text-align: center;">
+                View Transaction History
+            </a>
         </section>
-        <a href="/index.html">Logout</a>
-        
-        <!-- Popup notifications for success and error messages -->
-        <script th:if="${success != null}" th:inline="javascript">
-            /*<![CDATA[*/
-            alert('[[${success}]]');
-            /*]]>*/
-        </script>
-        <script th:if="${error != null}" th:inline="javascript">
-            /*<![CDATA[*/
-            alert('[[${error}]]');
-            /*]]>*/
-        </script>
+        <a href="/index.html" onclick="return confirmLogout()" 
+           style="display: inline-block; border: 1px solid black; color: aliceblue; text-decoration: none; background: #0186ae; padding: 5px 10px; border-radius: 5px; text-align: center;">
+            Logout
+        </a>
     </div>
     <script>
-        // Validate deposit amount
-        function validateDeposit() {
+        // Confirm deposit action
+        function confirmDeposit() {
             const depositAmount = document.getElementById("depositAmount").value;
-            const depositError = document.getElementById("depositError");
             if (depositAmount <= 0) {
+                const depositError = document.getElementById("depositError");
                 depositError.textContent = "Please enter a positive amount for deposit.";
                 return false;
             }
-            depositError.textContent = ""; // Clear error message
-            return true;
+            alert(`Deposit successful of UGX ${depositAmount}`);
+            return true; // Proceed with the form submission
         }
 
-        // Validate withdrawal amount
-        function validateWithdrawal() {
+        // Confirm withdrawal action
+        function confirmWithdrawal() {
             const withdrawAmount = document.getElementById("withdrawAmount").value;
-            const withdrawError = document.getElementById("withdrawError");
             if (withdrawAmount <= 0) {
+                const withdrawError = document.getElementById("withdrawError");
                 withdrawError.textContent = "Please enter a positive amount for withdrawal.";
                 return false;
             }
-            withdrawError.textContent = ""; // Clear error message
-            return true;
+            alert(`Withdrawal successful of UGX ${withdrawAmount}`);
+            return true; // Proceed with the form submission
+        }
+
+        // Confirm logout action
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
         }
     </script>
 </body>

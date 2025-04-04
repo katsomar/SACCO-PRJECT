@@ -12,6 +12,15 @@
             <h1>Transaction History</h1>
         </header>
         <section class="transaction-history">
+            <h2>Search Transactions</h2>
+            <form th:action="@{/api/transactions}" method="get">
+                <input type="hidden" name="userId" th:value="${userId}">
+                <label for="searchType">Search by Type:</label>
+                <input type="text" id="searchType" name="searchType" placeholder="e.g., Deposit or Withdrawal">
+                <label for="searchDate">Search by Date:</label>
+                <input type="date" id="searchDate" name="searchDate">
+                <button type="submit">Search</button>
+            </form>
             <h2>Transactions</h2>
             <table>
                 <thead>
@@ -29,15 +38,13 @@
                     </tr>
                 </tbody>
             </table>
-
-            <!-- Pagination Controls -->
-            <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${currentPage > 0}" th:href="@{/api/transactions(userId=${userId}, page=${currentPage - 1}, size=${pageSize})}">Previous</a>
-                <span th:text="'Page ' + (${currentPage + 1}) + ' of ' + ${totalPages}"></span>
-                <a th:if="${currentPage < ${totalPages} - 1}" th:href="@{/api/transactions(userId=${userId}, page=${currentPage + 1}, size=${pageSize})}">Next</a>
-            </div>
         </section>
-        <a href="/index.html">Back to Dashboard</a>
+        <br>
+        <!-- Replace the button with an anchor tag styled as a button -->
+        <a th:href="@{/api/dashboard(userId=${userId})}" 
+           style="display: inline-block; border: 1px solid black; color: aliceblue; text-decoration: none; background: #0186ae; padding: 5px 10px; border-radius: 5px; text-align: center;">
+            Back to Dashboard
+        </a>
     </div>
 </body>
 </html>

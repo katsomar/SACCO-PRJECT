@@ -12,22 +12,9 @@ public class DatabaseManager {
         try {
             // Load the SQL Server JDBC driver
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            System.out.println("SQL Server JDBC driver loaded successfully.");
         } catch (ClassNotFoundException e) {
-            System.err.println("SQL Server JDBC driver not found. Make sure it's in the classpath.");
             e.printStackTrace();
         }
-
-        // Debug: Check if the database connection is successful
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            if (conn != null) {
-                System.out.println("Database connection established at: " + DB_URL);
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to connect to the database.");
-            e.printStackTrace();
-        }
-
         createTables();
     }
 
@@ -160,6 +147,5 @@ public class DatabaseManager {
         DatabaseManager dbManager = new DatabaseManager();
         // Example usage of dbManager to insert a user
         dbManager.insertUser("user1", "John Doe", "john.doe@example.com", "password123");
-        System.out.println("Database setup complete.");
     }
 }
