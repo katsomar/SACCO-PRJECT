@@ -16,3 +16,5 @@ document.addEventListener('DOMContentLoaded', function() {
         pixie.style.animationDuration = `${Math.random() * 10 + 5}s`;
     }
 });
+
+
