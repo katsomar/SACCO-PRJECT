@@ -17,18 +17,22 @@
         </header>
         <section>
             <h2>Actions</h2>
-            <form id="depositForm" th:action="@{/api/deposit}" method="POST" onsubmit="return confirmDeposit()">
+            <!-- Deposit Form -->
+            <form id="depositForm" th:action="@{/api/deposit}" method="POST" onsubmit="return validateAndConfirmDeposit()">
                 <label for="depositAmount">Deposit Amount:</label>
                 <input type="number" id="depositAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
                 <div id="depositError" class="error-message" style="color: red; font-size: 12px;"></div>
+                <div class="info-message" style="color: #007bcc; font-size: 12px;">Minimum deposit amount is UGX 5000.</div>
                 <button type="submit">Deposit</button>
             </form>
-            <form id="withdrawForm" th:action="@{/api/withdraw}" method="POST" onsubmit="return confirmWithdrawal()">
+            <!-- Withdrawal Form -->
+            <form id="withdrawForm" th:action="@{/api/withdraw}" method="POST" onsubmit="return validateAndConfirmWithdrawal()">
                 <label for="withdrawAmount">Withdraw Amount:</label>
                 <input type="number" id="withdrawAmount" name="amount" required>
                 <input type="hidden" name="userId" th:value="${user.userId}">
                 <div id="withdrawError" class="error-message" style="color: red; font-size: 12px;"></div>
+                <div class="info-message" style="color: #007bcc; font-size: 12px;">Minimum withdrawal amount is UGX 5000.</div>
                 <button type="submit">Withdraw</button>
             </form>
         </section>
@@ -43,28 +47,28 @@
         </a>
     </div>
     <script>
-        // Confirm deposit action
-        function confirmDeposit() {
+        // Validate and confirm deposit
+        function validateAndConfirmDeposit() {
             const depositAmount = document.getElementById("depositAmount").value;
-            if (depositAmount <= 0) {
-                const depositError = document.getElementById("depositError");
-                depositError.textContent = "Please enter a positive amount for deposit.";
+            const depositError = document.getElementById("depositError");
+            if (depositAmount < 5000) {
+                depositError.textContent = "Deposit amount must be at least UGX 5000.";
                 return false;
             }
-            alert(`Deposit successful of UGX ${depositAmount}`);
-            return true; // Proceed with the form submission
+            depositError.textContent = ""; // Clear error message
+            return confirm(`Are you sure you want to deposit UGX ${depositAmount}?`);
         }
 
-        // Confirm withdrawal action
-        function confirmWithdrawal() {
+        // Validate and confirm withdrawal
+        function validateAndConfirmWithdrawal() {
             const withdrawAmount = document.getElementById("withdrawAmount").value;
-            if (withdrawAmount <= 0) {
-                const withdrawError = document.getElementById("withdrawError");
-                withdrawError.textContent = "Please enter a positive amount for withdrawal.";
+            const withdrawError = document.getElementById("withdrawError");
+            if (withdrawAmount < 5000) {
+                withdrawError.textContent = "Withdrawal amount must be at least UGX 5000.";
                 return false;
             }
-            alert(`Withdrawal successful of UGX ${withdrawAmount}`);
-            return true; // Proceed with the form submission
+            withdrawError.textContent = ""; // Clear error message
+            return confirm(`Are you sure you want to withdraw UGX ${withdrawAmount}?`);
         }
 
         // Confirm logout action

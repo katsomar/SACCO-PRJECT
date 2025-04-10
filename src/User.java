@@ -13,6 +13,8 @@ public class User {
     private String password;
     private double balance;
 
+    // Using LinkedList to store transactions for this user
+    // LinkedList is chosen because it allows efficient insertion and removal of transactions
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions = new LinkedList<>();
 
@@ -34,10 +36,12 @@ public class User {
         this.balance = balance;
     }
 
+
     // Getters and Setters
     public String getUserId() {
         return userId;
     }
+    
 
     public String getName() {
         return name;
@@ -61,6 +65,7 @@ public class User {
 
     public void deposit(double amount) {
         balance += amount;
+        // Adding a new transaction to the LinkedList
         Transaction transaction = new Transaction(userId, "Deposit", amount);
         transactions.add(transaction);
     }
@@ -68,6 +73,7 @@ public class User {
     public boolean withdraw(double amount) {
         if (balance >= amount) {
             balance -= amount;
+            // Adding a new transaction to the LinkedList
             Transaction transaction = new Transaction(userId, "Withdrawal", amount);
             transactions.add(transaction);
             return true;
@@ -76,6 +82,7 @@ public class User {
     }
 
     public List<Transaction> getLastNTransactions(int n) {
+        // Using LinkedList to retrieve the last N transactions
         List<Transaction> recentTransactions = new LinkedList<>();
         int count = 0;
 

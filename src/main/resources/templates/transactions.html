@@ -22,27 +22,81 @@
                 <button type="submit">Search</button>
             </form>
             <h2>Transactions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="transaction : ${transactions}">
-                        <td th:text="${transaction.timestamp}">Timestamp</td>
-                        <td th:text="${transaction.type}">Type</td>
-                        <td th:text="'UGX ' + ${transaction.amount}">UGX 0.00</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div id="transactionTableContainer">
+                <table id="transactionTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaction : ${transactions}">
+                            <td th:text="${transaction.timestamp}">Timestamp</td>
+                            <td th:text="${transaction.type}">Type</td>
+                            <td th:text="'UGX ' + ${transaction.amount}">UGX 0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
         <br>
-        <a th:href="@{/api/dashboard(userId=${userId})}" class="small-link">
-            Back to Dashboard
-        </a>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a th:href="@{/api/dashboard(userId=${userId})}" class="small-link">
+                Back to Dashboard
+            </a>
+            <button onclick="printTransactionTable()" class="small-link">
+                Print Transactions
+            </button>
+        </div>
     </div>
+    <script>
+        function printTransactionTable() {
+            const table = document.getElementById("transactionTable").outerHTML;
+            const newWindow = window.open("", "_blank");
+            newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Transactions</title>
+                        <style>
+                            body {
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 20px;
+                                color: #333;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                            }
+                            th, td {
+                                border: 1px solid #ddd;
+                                padding: 10px;
+                                text-align: left;
+                            }
+                            th {
+                                background-color: #007bcc;
+                                color: white;
+                                font-weight: bold;
+                            }
+                            tr:nth-child(even) {
+                                background-color: #f2f2f2;
+                            }
+                            tr:hover {
+                                background-color: #e8f0fe;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1 style="text-align: center;">Transaction History</h1>
+                        ${table}
+                    </body>
+                </html>
+            `);
+            newWindow.document.close();
+            newWindow.print();
+        }
+    </script>
 </body>
 </html>

@@ -114,23 +114,24 @@ public class SaccoController {
                                   @RequestParam(required = false) String searchType,
                                   @RequestParam(required = false) String searchDate,
                                   Model model) {
+        // Using List to store all transactions for the user
         List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
 
-        // Create a HashMap to store transactions by date
+        // Using Map to group transactions by date for filtering
         Map<LocalDate, List<Transaction>> transactionMap = transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getTimestamp().toLocalDate()));
-
-        // Filter transactions by type if searchType is provided
-        if (searchType != null && !searchType.isEmpty()) {
-            transactions = transactions.stream()
-                    .filter(transaction -> transaction.getType().equalsIgnoreCase(searchType))
-                    .collect(Collectors.toList());
-        }
 
         // Filter transactions by date if searchDate is provided
         if (searchDate != null && !searchDate.isEmpty()) {
             LocalDate date = LocalDate.parse(searchDate);
             transactions = transactionMap.getOrDefault(date, List.of());
+        }
+
+        // Further filter transactions by type if searchType is provided
+        if (searchType != null && !searchType.isEmpty()) {
+            transactions = transactions.stream()
+                    .filter(transaction -> transaction.getType().equalsIgnoreCase(searchType))
+                    .collect(Collectors.toList());
         }
 
         model.addAttribute("transactions", transactions);

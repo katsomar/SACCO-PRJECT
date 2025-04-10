@@ -123,6 +123,7 @@ public class DatabaseManager {
 
     public List<Transaction> getLastNTransactions(String userId, int n) {
         String sql = "SELECT * FROM Transactions WHERE userId = ? ORDER BY timestamp DESC LIMIT ?";
+        // Using ArrayList to store transactions retrieved from the database
         List<Transaction> transactions = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -130,6 +131,7 @@ public class DatabaseManager {
             pstmt.setInt(2, n);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
+                // Adding each transaction to the ArrayList
                 transactions.add(new Transaction(
                         rs.getString("userId"),
                         rs.getString("type"),
