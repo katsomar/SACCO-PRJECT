@@ -4,16 +4,15 @@ import com.example.sacco.model.Transaction;
 import com.example.sacco.model.User;
 import com.example.sacco.repository.TransactionRepository;
 import com.example.sacco.repository.UserRepository;
+import datastructures.CustomHashMap; // Ensure this import is resolved
+import datastructures.CustomLinkedList; // Ensure this import is resolved
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
@@ -114,31 +113,40 @@ public class SaccoController {
                                   @RequestParam(required = false) String searchType,
                                   @RequestParam(required = false) String searchDate,
                                   Model model) {
-        // Using List to store all transactions for the user
         List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
 
-        // Using Map to group transactions by date for filtering
-        Map<LocalDate, List<Transaction>> transactionMap = transactions.stream()
-                .collect(Collectors.groupingBy(transaction -> transaction.getTimestamp().toLocalDate()));
+        // Replace HashMap with CustomHashMap
+        CustomHashMap<LocalDate, CustomLinkedList<Transaction>> transactionMap = new CustomHashMap<>();
+        for (Transaction transaction : transactions) {
+            LocalDate date = transaction.getTimestamp().toLocalDate();
+            if (!transactionMap.containsKey(date)) {
+                transactionMap.put(date, new CustomLinkedList<>());
+            }
+            transactionMap.get(date).add(transaction);
+        }
 
         // Filter transactions by date if searchDate is provided
         if (searchDate != null && !searchDate.isEmpty()) {
             LocalDate date = LocalDate.parse(searchDate);
-            transactions = transactionMap.getOrDefault(date, List.of());
+            transactions = transactionMap.containsKey(date) ? transactionMap.get(date) : new CustomLinkedList<>();
         }
 
         // Further filter transactions by type if searchType is provided
         if (searchType != null && !searchType.isEmpty()) {
-            transactions = transactions.stream()
-                    .filter(transaction -> transaction.getType().equalsIgnoreCase(searchType))
-                    .collect(Collectors.toList());
+            CustomLinkedList<Transaction> filteredTransactions = new CustomLinkedList<>();
+            for (Transaction transaction : transactions) {
+                if (transaction.getType().equalsIgnoreCase(searchType)) {
+                    filteredTransactions.add(transaction);
+                }
+            }
+            transactions = filteredTransactions;
         }
 
         model.addAttribute("transactions", transactions);
         model.addAttribute("userId", userId);
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchDate", searchDate);
-        return "transactions"; // Serve the transactions page
+        return "transactions";
     }
 
     @GetMapping("/dashboard")

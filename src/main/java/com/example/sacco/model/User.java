@@ -1,7 +1,8 @@
 package com.example.sacco.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
+import datastructures.CustomStack; // Ensure this import is resolved
+import datastructures.CustomLinkedList; // Ensure this import is resolved
 import java.util.List;
 
 @Entity
@@ -15,7 +16,9 @@ public class User {
     private double balance;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions = new ArrayList<>();
+    private CustomLinkedList<Transaction> transactions = new CustomLinkedList<>(); // Replace ArrayList with CustomLinkedList
+
+    private CustomStack<Transaction> transactionStack = new CustomStack<>(); // Add CustomStack for undo feature
 
     // Default constructor (required by JPA)
     public User() {}
@@ -69,27 +72,41 @@ public class User {
         this.balance = balance;
     }
 
-    public List<Transaction> getTransactions() {
+    public CustomLinkedList<Transaction> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
+    public void setTransactions(CustomLinkedList<Transaction> transactions) {
         this.transactions = transactions;
     }
 
-    public void deposit(double amount) {
+    public void deposit(double amount) { // Add transaction to CustomLinkedList
         balance += amount;
         Transaction transaction = new Transaction(this, "Deposit", amount);
-        transactions.add(transaction);
+        transactions.add(transaction); // Add transaction to CustomLinkedList
+        transactionStack.push(transaction); // Push transaction onto stack
     }
 
-    public boolean withdraw(double amount) {
+    public boolean withdraw(double amount) { // Add transaction to CustomLinkedList
         if (balance >= amount) {
             balance -= amount;
-            Transaction transaction = new Transaction(this, "Withdrawal", amount); // Pass the User object
-            transactions.add(transaction);
+            Transaction transaction = new Transaction(this, "Withdrawal", amount);
+            transactions.add(transaction); // Add transaction to CustomLinkedList
+            transactionStack.push(transaction); // Push transaction onto stack
             return true;
         }
         return false;
+    }
+
+    public void undoLastTransaction() {
+        if (!transactionStack.isEmpty()) {
+            Transaction lastTransaction = transactionStack.pop(); // Pop the last transaction
+            if (lastTransaction.getType().equals("Deposit")) {
+                balance -= lastTransaction.getAmount();
+            } else if (lastTransaction.getType().equals("Withdrawal")) {
+                balance += lastTransaction.getAmount();
+            }
+            transactions.remove(lastTransaction); // Remove from transaction history
+        }
     }
 }

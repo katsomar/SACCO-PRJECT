@@ -1,5 +1,5 @@
 import java.sql.*;
-import java.util.ArrayList;
+import datastructures.CustomLinkedList;
 import java.util.List;
 
 public class DatabaseManager {
@@ -121,17 +121,17 @@ public class DatabaseManager {
         }
     }
 
-    public List<Transaction> getLastNTransactions(String userId, int n) {
+    public CustomLinkedList<Transaction> getLastNTransactions(String userId, int n) {
         String sql = "SELECT * FROM Transactions WHERE userId = ? ORDER BY timestamp DESC LIMIT ?";
-        // Using ArrayList to store transactions retrieved from the database
-        List<Transaction> transactions = new ArrayList<>();
+        // Replace ArrayList with CustomLinkedList
+        CustomLinkedList<Transaction> transactions = new CustomLinkedList<>();
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userId);
             pstmt.setInt(2, n);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                // Adding each transaction to the ArrayList
+                // Add each transaction to the CustomLinkedList
                 transactions.add(new Transaction(
                         rs.getString("userId"),
                         rs.getString("type"),

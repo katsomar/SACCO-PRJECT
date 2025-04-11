@@ -1,8 +1,10 @@
 // Importing List to handle collections of transactions
 import java.util.List;
+import datastructures.CustomQueue;
 
 public class SaccoSystem {
     private DatabaseManager dbManager;
+    private CustomQueue<Transaction> transactionQueue = new CustomQueue<>(); // Add CustomQueue for transactions
 
     public SaccoSystem() { //constructor that initializes saccosystem object
         this.dbManager = new DatabaseManager();//creates an instance of the DatabaseManager class and assigns it to db ,manager
@@ -62,5 +64,16 @@ public class SaccoSystem {
     //currency formatting
     public String formatCurrency(double amount) {
         return "UGX " + String.format("%,.2f", amount);
+    }
+
+    public void processTransactions() {
+        while (!transactionQueue.isEmpty()) {
+            Transaction transaction = transactionQueue.dequeue(); // Dequeue transaction
+            dbManager.insertTransaction(transaction.getUser().getUserId(), transaction.getType(), transaction.getAmount());
+        }
+    }
+
+    public void addTransactionToQueue(Transaction transaction) {
+        transactionQueue.enqueue(transaction); // Enqueue transaction
     }
 }
