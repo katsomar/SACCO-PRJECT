@@ -4,7 +4,8 @@ import com.example.sacco.model.Transaction;
 import com.example.sacco.model.User;
 import com.example.sacco.repository.TransactionRepository;
 import com.example.sacco.repository.UserRepository;
-import datastructures.CustomHashMap; // Ensure this import is resolved
+// Ensure the correct package path for CustomHashMap
+import datastructures.CustomHashMap;
 import datastructures.CustomLinkedList; // Ensure this import is resolved
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -113,30 +114,37 @@ public class SaccoController {
                                   @RequestParam(required = false) String searchType,
                                   @RequestParam(required = false) String searchDate,
                                   Model model) {
-        List<Transaction> transactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
+        // Get repository list (cannot avoid built‐in here because of Spring Data JPA)
+        List<Transaction> repositoryTransactions = transactionRepository.findByUserUserIdOrderByTimestampDesc(userId);
 
-        // Replace HashMap with CustomHashMap
+        // Build a CustomHashMap grouping transactions by date
         CustomHashMap<LocalDate, CustomLinkedList<Transaction>> transactionMap = new CustomHashMap<>();
-        for (Transaction transaction : transactions) {
+        for (Transaction transaction : repositoryTransactions) {
             LocalDate date = transaction.getTimestamp().toLocalDate();
             if (!transactionMap.containsKey(date)) {
-                transactionMap.put(date, new CustomLinkedList<>());
+                transactionMap.put(date, new CustomLinkedList<Transaction>());
             }
             transactionMap.get(date).add(transaction);
         }
 
-        // Filter transactions by date if searchDate is provided
+        // Use your CustomLinkedList directly when filtering by date
+        List<Transaction> transactions = repositoryTransactions; // default from repository
         if (searchDate != null && !searchDate.isEmpty()) {
             LocalDate date = LocalDate.parse(searchDate);
-            transactions = transactionMap.containsKey(date) ? transactionMap.get(date) : new CustomLinkedList<>();
+            // Directly use your custom list if present, otherwise create a new one
+            CustomLinkedList<Transaction> resultList = transactionMap.containsKey(date)
+                    ? transactionMap.get(date)
+                    : new CustomLinkedList<Transaction>();
+            transactions = resultList;
         }
 
-        // Further filter transactions by type if searchType is provided
+        // Filter transactions by type using your custom list
         if (searchType != null && !searchType.isEmpty()) {
             CustomLinkedList<Transaction> filteredTransactions = new CustomLinkedList<>();
-            for (Transaction transaction : transactions) {
-                if (transaction.getType().equalsIgnoreCase(searchType)) {
-                    filteredTransactions.add(transaction);
+            for (int i = 0; i < transactions.size(); i++) {
+                Transaction t = ((CustomLinkedList<Transaction>)transactions).get(i);
+                if (t.getType().equalsIgnoreCase(searchType)) {
+                    filteredTransactions.add(t);
                 }
             }
             transactions = filteredTransactions;

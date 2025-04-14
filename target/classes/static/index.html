@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJARBC SACCO-MS</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to JJARBC SACCO Management System</h1>
+        </header>
+        <form action="/api/login" method="POST">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="userId" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/api/signup">Sign up</a></p>
+    </div>
+</body>
+</html>

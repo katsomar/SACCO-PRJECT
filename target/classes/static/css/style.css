@@ -1,0 +1,191 @@
+body {
+    background: #e8f0fe;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #007bcc;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input, form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Updated Button Styling */
+form button {
+    background: linear-gradient(45deg, #007bcc, #005fa3);
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    background: linear-gradient(45deg, #005fa3, #003f75);
+    transform: scale(1.05);
+}
+
+/* General button styling */
+button {
+    background: linear-gradient(45deg, #007bcc, #005fa3);
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #005fa3, #003f75);
+    transform: scale(1.05);
+}
+
+/* Smaller buttons for actions like Logout and View Transactions */
+button.small-button {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Add subtle hover effects for links */
+a {
+    color: #007bcc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #005fa3;
+    text-decoration: underline;
+}
+
+.balance-card {
+    background: linear-gradient(45deg, #007bcc, #005fa3);
+    color: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.balance-card h2 {
+    margin: 0;
+    font-size: 24px;
+}
+.balance-card p {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Add styles for smaller buttons */
+.small-button {
+    background: linear-gradient(45deg, #007bcc, #005fa3);
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px 15px; /* Smaller padding for smaller buttons */
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    width: 10%; /* Adjust width as needed */
+    height: 5px;;
+}
+
+.small-button:hover {
+    background: linear-gradient(45deg, #005fa3, #003f75);
+    transform: scale(1.05);
+}
+
+/* Smaller buttons aligned to the left */
+button.small-left-button {
+    background: linear-gradient(45deg, #007bcc, #005fa3);
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 12px; /* Smaller padding */
+    font-size: 12px; /* Smaller font size */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left; /* Align text to the left */
+    display: inline-block;
+    margin: 5px 0; /* Add spacing between buttons */
+}
+
+button.small-left-button:hover {
+    background: linear-gradient(45deg, #005fa3, #003f75);
+    transform: scale(1.05);
+}
+
+/* Styling for small links */
+.small-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid #007bcc;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: #fff;
+    color: #007bcc;
+}
+
+.small-link:hover {
+    background: #005fa3;
+    color: #fff;
+    text-decoration: none;
+}

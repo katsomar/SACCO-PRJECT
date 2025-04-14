@@ -1,8 +1,8 @@
 package com.example.sacco.model;
 
 import jakarta.persistence.*;
-import datastructures.CustomStack; // Ensure this import is resolved
-import datastructures.CustomLinkedList; // Ensure this import is resolved
+import datastructures.CustomStack; // Correct import
+import datastructures.CustomLinkedList; // Correct import
 import java.util.List;
 
 @Entity

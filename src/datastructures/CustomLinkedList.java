@@ -67,6 +67,28 @@ public class CustomLinkedList<T> {
         return data;
     }
 
+    // Remove an element by value
+    public boolean remove(T data) {
+        if (head == null) return false;
+        if (head.data.equals(data)) {
+            head = head.next;
+            size--;
+            if (head == null) tail = null;
+            return true;
+        }
+        Node<T> current = head;
+        while (current.next != null) {
+            if (current.next.data.equals(data)) {
+                current.next = current.next.next;
+                if (current.next == null) tail = current;
+                size--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
     // Get the size of the list
     public int size() {
         return size;
