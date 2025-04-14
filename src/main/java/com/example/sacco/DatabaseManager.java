@@ -2,7 +2,7 @@ package com.example.sacco;
 
 import java.sql.*;
 import datastructures.CustomLinkedList;
-import java.util.List;
+import com.example.sacco.model.Transaction;  // added import
 
 public class DatabaseManager {
     private static final String DB_URL = "jdbc:sqlite:database.db";

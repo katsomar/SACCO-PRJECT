@@ -3,7 +3,6 @@ package com.example.sacco.model;
 import jakarta.persistence.*;
 import datastructures.CustomStack; // Correct import
 import datastructures.CustomLinkedList; // Correct import
-import java.util.List;
 
 @Entity
 @Table(name = "users") // Rename the table to "users"

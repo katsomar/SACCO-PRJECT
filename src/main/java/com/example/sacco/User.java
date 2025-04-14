@@ -1,8 +1,8 @@
-package com.example.sacco.model;
+package com.example.sacco;
 
 import jakarta.persistence.*;
 import datastructures.CustomLinkedList;
-import java.util.List;
+import com.example.sacco.model.Transaction;  // added import
 
 @Entity
 public class User {
@@ -58,6 +58,11 @@ public class User {
     public double getBalance() {
         return balance;
     }
+    
+    // Added setter method for balance
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
     public CustomLinkedList<Transaction> getTransactions() {
         return transactions;
@@ -65,25 +70,25 @@ public class User {
 
     public void deposit(double amount) {
         balance += amount;
-        // Adding a new transaction to the CustomLinkedList
-        Transaction transaction = new Transaction(userId, "Deposit", amount);
+        // Updated constructor call with timestamp argument
+        Transaction transaction = new Transaction(userId, "Deposit", amount, java.time.LocalDateTime.now().toString());
         transactions.add(transaction);
     }
 
     public boolean withdraw(double amount) {
         if (balance >= amount) {
             balance -= amount;
-            // Adding a new transaction to the CustomLinkedList
-            Transaction transaction = new Transaction(userId, "Withdrawal", amount);
+            // Updated constructor call with timestamp argument
+            Transaction transaction = new Transaction(userId, "Withdrawal", amount, java.time.LocalDateTime.now().toString());
             transactions.add(transaction);
             return true;
         }
         return false;
     }
 
-    public List<Transaction> getLastNTransactions(int n) {
+    public CustomLinkedList<Transaction> getLastNTransactions(int n) {
         // Using CustomLinkedList to retrieve the last N transactions
-        List<Transaction> recentTransactions = new CustomLinkedList<>();
+        CustomLinkedList<Transaction> recentTransactions = new CustomLinkedList<>();
         int count = 0;
 
         for (int i = transactions.size() - 1; i >= 0 && count < n; i--) {

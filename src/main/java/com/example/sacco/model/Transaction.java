@@ -29,6 +29,15 @@ public class Transaction {
         this.timestamp = LocalDateTime.now();
     }
 
+    // Updated constructor: we no longer store the userId string since the field is removed.
+    public Transaction(String userId, String type, double amount, String timestamp) {
+        // Optionally, you can look up the User using the userId if needed.
+        // For now, we leave 'user' as null.
+        this.type = type;
+        this.amount = amount;
+        this.timestamp = LocalDateTime.parse(timestamp);
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

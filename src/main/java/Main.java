@@ -1,3 +1,5 @@
+import com.example.sacco.SaccoSystem;
+import com.example.sacco.User;  // Updated import: using com.example.sacco.User instead of com.example.sacco.model.User
 import java.util.Scanner;
 
 public class Main {
@@ -53,6 +55,10 @@ public class Main {
     }
 
     private static void dashboard(Scanner scanner, SaccoSystem saccoSystem, User user) {
+        if (user == null) { // Guard clause: if user is null, exit the dashboard
+            System.out.println("Error: User is null.");
+            return;
+        }
         while (true) {
             System.out.println("\n--- Dashboard ---");
             System.out.println("1. View Balance");
@@ -65,12 +71,17 @@ public class Main {
             scanner.nextLine(); // Consume newline
 
             if (choice == 1) {
-                // Fetch the latest user data from the database
-                user = saccoSystem.login(user.getUserId(), user.getPassword());
+                // Before reassigning user, check if it's not null
                 if (user != null) {
-                    System.out.println("Your current balance is: " + formatCurrency(user.getBalance()));
+                    User updatedUser = saccoSystem.login(user.getUserId(), user.getPassword());
+                    if (updatedUser != null) {
+                        user = updatedUser;
+                        System.out.println("Your current balance is: " + formatCurrency(user.getBalance()));
+                    } else {
+                        System.out.println("Error fetching user data.");
+                    }
                 } else {
-                    System.out.println("Error fetching user data.");
+                    System.out.println("Error: user is null.");
                 }
             } else if (choice == 2) {
                 System.out.print("Enter amount to deposit: ");
